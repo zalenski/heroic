@@ -46946,25 +46946,27 @@ angular.module('_pages/docs/api/post-query-batch.ngt', []).run(['$templateCache'
     '\n' +
     '    <codeblock language="json">\n' +
     '    {\n' +
-    '      "a": {\n' +
-    '        "range": {"type": "relative", "unit": "HOURS", "value": 2},\n' +
-    '        "filter": ["and", ["key", "foo"], ["=", "foo", "bar"], ["+", "role"]],\n' +
-    '        "aggregation": {\n' +
-    '          "type": "group",\n' +
-    '          "of": ["site"],\n' +
-    '          "each": {\n' +
-    '            "type": "sum"\n' +
+    '      "queries": {\n' +
+    '        "a": {\n' +
+    '          "range": {"type": "relative", "unit": "HOURS", "value": 2},\n' +
+    '          "filter": ["and", ["key", "foo"], ["=", "foo", "bar"], ["+", "role"]],\n' +
+    '          "aggregation": {\n' +
+    '            "type": "group",\n' +
+    '            "of": ["site"],\n' +
+    '            "each": {\n' +
+    '              "type": "sum"\n' +
+    '            }\n' +
     '          }\n' +
-    '        }\n' +
-    '      },\n' +
-    '      "b": {\n' +
-    '        "range": {"type": "relative", "unit": "HOURS", "value": 2},\n' +
-    '        "filter": ["and", ["key", "baz"], ["=", "foo", "bar"], ["+", "role"]],\n' +
-    '        "aggregation": {\n' +
-    '          "type": "group",\n' +
-    '          "of": ["site"],\n' +
-    '          "each": {\n' +
-    '            "type": "sum"\n' +
+    '        },\n' +
+    '        "b": {\n' +
+    '          "range": {"type": "relative", "unit": "HOURS", "value": 2},\n' +
+    '          "filter": ["and", ["key", "baz"], ["=", "foo", "bar"], ["+", "role"]],\n' +
+    '          "aggregation": {\n' +
+    '            "type": "group",\n' +
+    '            "of": ["site"],\n' +
+    '            "each": {\n' +
+    '              "type": "sum"\n' +
+    '            }\n' +
     '          }\n' +
     '        }\n' +
     '      }\n' +

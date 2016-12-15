@@ -44911,6 +44911,10 @@ angular.module('_pages/docs.ngt', []).run(['$templateCache', function($templateC
     '          <li ui-sref-active="active">\n' +
     '            <a ui-sref="docs.config.shell_server">Shell Server</a>\n' +
     '          </li>\n' +
+    '\n' +
+    '          <li ui-sref-active="active">\n' +
+    '            <a ui-sref="docs.config.features">Features</a>\n' +
+    '          </li>\n' +
     '        </ul>\n' +
     '      </li>\n' +
     '\n' +
@@ -47072,6 +47076,13 @@ angular.module('_pages/docs/api/post-query-metrics.ngt', []).run(['$templateCach
     '        Given time series <code language="json">{"a": 1, "b": 2}</code> and <code language="json">{"b": 3, "c": 4}</code>, and a <code>groupBy</code> of <code language="json">["a", "b"]</code>\n' +
     '        the returned result groups would be <code language="json">[{"a": 1, "b": 2}, {"a": null, "b": 3}]</code>.\n' +
     '      </api-field>\n' +
+    '\n' +
+    '      <api-field name="features" type-json="[<string>, ...]">\n' +
+    '        <p>\n' +
+    '          Enable or disable a feature on a per-query basis.\n' +
+    '          See <a ui-sref="docs.config.features">Features Configuration</a> for more details.\n' +
+    '        </p>\n' +
+    '      </api-field>\n' +
     '    </api-type>\n' +
     '\n' +
     '    <h4>Example Request</h4>\n' +
@@ -48142,6 +48153,112 @@ angular.module('_pages/docs/config/elasticsearch_connection.ngt', []).run(['$tem
     '    <td>\n' +
     '      Root directory where indexes will be stored.\n' +
     '      If omitted, will create a temporary root directory.\n' +
+    '    </td>\n' +
+    '  </tr>\n' +
+    '</table>\n' +
+    '');
+}]);
+
+angular.module('_pages/docs/config/features.ngt', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('_pages/docs/config/features.ngt',
+    '<h2>Features Configuration</h2>\n' +
+    '\n' +
+    '<p>\n' +
+    '  Features are a way to modify the behaviour of your service.\n' +
+    '  They are implemented as flags namespaced to heroic, an example would be:\n' +
+    '  <code>com.spotify.heroic.shift_range</code>.\n' +
+    '</p>\n' +
+    '\n' +
+    '<p>\n' +
+    '  Features can be configured either on a per-query basis, or in the\n' +
+    '  configuration section <code>features</code> to apply it to all queries by\n' +
+    '  default.\n' +
+    '  They can either be enabled or disabled. To enable a flag, you specify its\n' +
+    '  name. To disable it, you specify it\'s name prefixed with a minux sign\n' +
+    '  <code>-&lt;name&gt;</code>.\n' +
+    '</p>\n' +
+    '\n' +
+    '<p>\n' +
+    '  Precedence is defined as the following:\n' +
+    '</p>\n' +
+    '\n' +
+    '<ul>\n' +
+    '  <li>Query</li>\n' +
+    '  <li>Configuration</li>\n' +
+    '  <li>Default</li>\n' +
+    '</ul>\n' +
+    '\n' +
+    '<p>\n' +
+    '  This is applied for any given feature flag.\n' +
+    '  If omitted in one stage, it will be looked up in another.\n' +
+    '</p>\n' +
+    '\n' +
+    '<p>\n' +
+    '  A typical configuration looks something like this.\n' +
+    '</p>\n' +
+    '\n' +
+    '<codeblock language="yaml">\n' +
+    'features:\n' +
+    '  - com.spotify.heroic.shift_range\n' +
+    '  - -com.spotify.heroic.distributed_aggregations\n' +
+    '</codeblock>\n' +
+    '\n' +
+    '<p>\n' +
+    '  When added to a query, they are added to the <code>.features</code> section\n' +
+    '  like this:\n' +
+    '</p>\n' +
+    '\n' +
+    '<codeblock language="json">\n' +
+    '{\n' +
+    '  "features": [\n' +
+    '    "com.spotify.heroic.shift_range",\n' +
+    '    "-com.spotify.heroic.distributed_aggregations"\n' +
+    '  ]\n' +
+    '}\n' +
+    '</codeblock>\n' +
+    '\n' +
+    '<h3 id="available-features">Available Features</h3>\n' +
+    '\n' +
+    '<div class="callout callout-danger">\n' +
+    '  <h4>This section can quickly become out of date</h4>\n' +
+    '  <p>\n' +
+    '    For the source of truth, look at the Feature class in heroic:\n' +
+    '    <a git-href-java="heroic-component">com.spotify.heroic.common.Feature</a>\n' +
+    '  </p>\n' +
+    '</div>\n' +
+    '\n' +
+    '<table class="table">\n' +
+    '  <tr>\n' +
+    '    <th>Name</th>\n' +
+    '    <th>Description</th>\n' +
+    '    <th>Default</th>\n' +
+    '  </tr>\n' +
+    '\n' +
+    '  <tr>\n' +
+    '    <td><code>com.spotify.heroic.distributed_aggregations</code></td>\n' +
+    '    <td>\n' +
+    '      Enable feature to perform distributed aggregations.\n' +
+    '      Aggregations are commonly performed per-shard, and the result\n' +
+    '      concatenated. This enables experimental support for distributed\n' +
+    '      aggregations which behave transparently across shards.\n' +
+    '      Typically this will cause more data to be transported across shards for\n' +
+    '      each request.\n' +
+    '    </td>\n' +
+    '    <td>\n' +
+    '      off\n' +
+    '    </td>\n' +
+    '  </tr>\n' +
+    '\n' +
+    '  <tr>\n' +
+    '    <td><code>com.spotify.heroic.shift_range</code></td>\n' +
+    '    <td>\n' +
+    '      Enable feature to cause range to be rounded on the current cadence.\n' +
+    '      This will assert that there are data outside of the range queried for and\n' +
+    '      that the range is aligned to the queried cadence.\n' +
+    '      Which is a useful feature when using a dashboarding system.\n' +
+    '    </td>\n' +
+    '    <td>\n' +
+    '      on\n' +
     '    </td>\n' +
     '  </tr>\n' +
     '</table>\n' +
@@ -50347,16 +50464,17 @@ Prism.languages.ts = {
     '_pages/docs/aggregations.ngt',
     '_pages/docs/shell.ngt',
     '_pages/docs/profiles.ngt',
-    '_pages/docs/config.ngt',
     '_pages/docs/federation.ngt',
     '_pages/docs/federation-tail.ngt',
+    '_pages/docs/config.ngt',
     '_pages/docs/config/cluster.ngt',
     '_pages/docs/config/metrics.ngt',
     '_pages/docs/config/metadata.ngt',
     '_pages/docs/config/suggest.ngt',
     '_pages/docs/config/elasticsearch_connection.ngt',
     '_pages/docs/config/shell_server.ngt',
-    '_pages/docs/config/consumer.ngt'
+    '_pages/docs/config/consumer.ngt',
+    '_pages/docs/config/features.ngt'
   ]);
 
   function DocumentationCtrl($scope) {
@@ -50458,6 +50576,10 @@ Prism.languages.ts = {
       .state('docs.config.consumer', {
         url: '/consumer',
         templateUrl: '_pages/docs/config/consumer.ngt'
+      })
+      .state('docs.config.features', {
+        url: '/features',
+        templateUrl: '_pages/docs/config/features.ngt'
       });
   }]);
 })();

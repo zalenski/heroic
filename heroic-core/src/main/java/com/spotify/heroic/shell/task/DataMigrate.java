@@ -305,8 +305,10 @@ public class DataMigrate implements ShellTask {
             if (n % LINES == 0) {
                 synchronized (io) {
                     try {
-                        io.out().println(" failedKeys: " + failedKeys.get() + ", last: " +
-                            mapper.writeValueAsString(key));
+                        io
+                            .out()
+                            .println(" failedKeys: " + failedKeys.get() + ", last: " +
+                                mapper.writeValueAsString(key));
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
@@ -338,7 +340,7 @@ public class DataMigrate implements ShellTask {
             }
 
             final AsyncFuture<Void> write = to
-                .write(new WriteMetric.Request(key.getSeries(), value))
+                .write(new WriteMetric.Request(Tracing.NONE, key.getSeries(), value))
                 .directTransform(v -> null);
 
             future.bind(write);
